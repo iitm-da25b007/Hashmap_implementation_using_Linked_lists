@@ -1,3 +1,9 @@
+#include <cstddef>
+#include <iostream>
+#include <string>
+#include <stdexcept>
+#include <utility>
+
 template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
 class HashMap{
 public:
