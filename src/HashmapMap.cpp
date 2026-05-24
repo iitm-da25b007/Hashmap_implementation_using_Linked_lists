@@ -26,6 +26,7 @@ private:
     HashFunc hash;
     using Bucket = LinkedList<KeyType, ValueType>;
     Bucket buckets[N];
+    size_t n = 0;
 };
 
 template<typename T>
@@ -33,3 +34,29 @@ class HashFunctor{
 public:
     size_t operator()(T Key) const;
 };
+// specialization for int
+template<>
+size_t HashFunctor<int>::operator()(int Key) const {
+    return static_cast<size_t>(Key >= 0 ? Key : -Key); // direct conversion
+}
+// specialization for float
+template<>
+size_t HashFunctor<float>::operator()(float Key) const {
+    float temp = Key * 1000; // multiplying by 1000 to preserve decimal information
+    if (temp < 0) {
+        temp = -temp;
+    }
+    return static_cast<size_t>(temp);
+}
+// specialization for string
+template<>
+size_t HashFunctor<std::string>::operator()(std::string Key) const {
+    size_t hash = 0; // initializing hash value
+    // traversing every character in string
+    for (char c : Key) {
+      // updating hash using polynomial rolling method
+      // 31 is commonly used in string hashing
+      hash = hash * 31 + static_cast<size_t>(c);
+    }
+    return hash;
+}
