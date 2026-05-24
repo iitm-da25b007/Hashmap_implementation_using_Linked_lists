@@ -62,10 +62,8 @@ public:
     }
 
     void insert(const KeyType &key, const ValueType &value) {
-        ValueType *ptr = find(key); // checking if given key is already there or not
-        if (ptr != nullptr) {
-            *ptr = value; // if present, updating its value
-            return;
+        if (contains(key)) {
+            return; // checking whether key already exists or not
         }
         Node *newNode = new Node{key, value, head}; // creating new node
         head = newNode; // making it head
@@ -144,14 +142,16 @@ public:
         if (n != other.n) {
            return false; // size check
         }
-        const Node *curr1 = head;
-        const Node *curr2 = other.head; // initializing traversal nodes
-        while (curr1 != nullptr) {
-            if (curr1->key != curr2->key || curr1->value != curr2->value) {
-               return false;               // comparing node by node
+        const Node *curr = head;  // initializing traversal nodes
+        while (curr != nullptr) {
+            const ValueType *ptr = other.find(curr->key);
+            if (ptr == nullptr) {
+                return false; // checking whether our required key exists or not
             }
-            curr1 = curr1->next;
-            curr2 = curr2->next;
+            if (*ptr != curr->value) {
+                return false; // checking value of that corresponding key
+            }
+            curr = curr->next; // traversing the list
         }
         return true;
     }
