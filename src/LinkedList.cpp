@@ -10,24 +10,24 @@ public:
         head = nullptr;
         n=0;
         if (other.head == nullptr) {
-            return; // checking whether given list is empty or not
+            return; // Handle empty list case
         }
-        const Node *curr = other.head; // initializing traversal pointer
-        head = new Node{curr->key,curr->value,nullptr}; // copying first node at different address(i.e. new)
+        const Node *curr = other.head;
+        head = new Node{curr->key,curr->value,nullptr}; // Deep copy the head node
         Node *tail = head; // initializing new list's traversing pointer
         curr = curr->next;
         while (curr != nullptr) {
             tail->next = new Node{curr->key,curr->value,nullptr}; // copying remaining nodes
             tail = tail->next;
-            curr = curr->next; // traversing
+            curr = curr->next;
         }
         n = other.n; // updating size
     }
     LinkedList(LinkedList &&other) noexcept {
         head = other.head; // taking ownership of node chain(moving)
         n = other.n; // updating size
-        other.head = nullptr; // making given list(i.e. other) to empty
-        other.n = 0; // updating given list's size to zero
+        other.head = nullptr; // emptying linked list(other)
+        other.n = 0;
     }
     LinkedList &operator=(const LinkedList &other) {
         if (this==&other) {
@@ -56,7 +56,7 @@ public:
         clear(); // removing old nodes
         head = other.head; // transferring ownership
         n = other.n;
-        other.head = nullptr; // emptying other
+        other.head = nullptr; // emptying linked list(other)
         other.n = 0;
         return *this;
     }
@@ -67,18 +67,18 @@ public:
         }
         Node *newNode = new Node{key, value, head}; // creating new node
         head = newNode; // making it head
-        n++; // increasing size
+        n++;
     }
     void erase(const KeyType &key) {
-        Node *curr = head; // initializing pointer node
+        Node *curr = head;
         if (curr == nullptr) {
-            return; // check for empty linked list
+            return; // Handle empty list case
         }
         // For removing head node
         if (curr->key == key){
             head = head->next; // changing head to its next node
             delete curr; // deleting head node(i.e. curr)
-            n--; // decreasing size
+            n--;
             return;
         }
         // For removing non-head node
@@ -87,10 +87,10 @@ public:
              Node *temp = curr->next; // creating temporary node as our required node
              curr->next = curr->next->next; // changing previous node's next to required node's next node
              delete temp; // deleting required node
-             n--; // decreasing size
+             n--;
              return;
            }
-           curr = curr->next; // traversing list
+           curr = curr->next;
         }
     }
 
@@ -98,9 +98,9 @@ public:
       while (head != nullptr) {
          Node *temp = head; // initializing temporary node as head
          head = head->next; // changing head to its next node
-         delete temp; // deleting previous head node(i.e. temporary node)
+         delete temp;
       }
-      n=0; // making size of list zero
+      n=0; // updating size to zero
     }
 
     const ValueType &at(const KeyType &key) const {
@@ -118,22 +118,22 @@ public:
         return *ptr; // returns value at that address
     }
     ValueType *find(const KeyType &key) {
-        Node *curr = head; // initializing pointer node
+        Node *curr = head;
         while (curr != nullptr) {
             if (curr->key == key) {
             return &(curr->value); // if matches, returns its address
             }
-            curr = curr->next;  // traversing the list
+            curr = curr->next;
         }
         return nullptr; // if not found
     }
     const ValueType *find(const KeyType &key) const {
-        const Node *curr = head; // initializing pointer node
+        const Node *curr = head;
         while (curr != nullptr) {
             if (curr->key == key) {
             return &(curr->value); // if matches, returns its address
             }
-            curr = curr->next; // traversing the list
+            curr = curr->next;
         }
         return nullptr; // if not found
     }
@@ -142,7 +142,7 @@ public:
         if (n != other.n) {
            return false; // size check
         }
-        const Node *curr = head;  // initializing traversal nodes
+        const Node *curr = head;
         while (curr != nullptr) {
             const ValueType *ptr = other.find(curr->key);
             if (ptr == nullptr) {
@@ -151,19 +151,19 @@ public:
             if (*ptr != curr->value) {
                 return false; // checking value of that corresponding key
             }
-            curr = curr->next; // traversing the list
+            curr = curr->next;
         }
         return true;
     }
     bool operator!=(const LinkedList &other) const {
-        return !(*this == other); // reversing answer of equality checker
+        return !(*this == other);
     }
 
     [[nodiscard]] bool contains(const KeyType &key) const {
-        return (find(key) != nullptr); // If key is there, we will get some value(means list contains that key)
+        return (find(key) != nullptr);
     }
     [[nodiscard]] size_t size() const {
-        return n; // gives current size of linked list
+        return n;
     }
 
 private:
